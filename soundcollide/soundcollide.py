@@ -40,6 +40,18 @@ def new_profile():
     A successful post must have a unique username, unique email, valid zipcode,
     password of at least 6 characters, and a matching confirmation password.
 
+    Form Parameters:
+        password (string): The user's supplied password. Must be at least 6
+            characters.
+        confirm_password (string): Reentry of the password. Must match the
+            password value.
+        username (string): The user's desired username. The database forces
+            unique entries only.
+        email (string): The user's email. The database forces unique entries 
+            only.
+        zipcode (string): The user's zipcode. Must be 5 characters and a string
+            of all digits.
+
     Returns:
         Response: Message and status code are set using make_response()
             depedning on the circumstances of the response.
@@ -121,10 +133,14 @@ def get_profile(id):
 def add_project():
     '''Saves a new project to a user id, if available.
 
+    Form Parameters:
+        project (string): A text string describing the project.
+        username (string): The username to which the project should be saved.
+
     Returns:
         Response: A 201 status code is returned if the project is successfully
-            added. If not a 400 status code is returned indicating the operation
-            was not successful.
+            added. If not a 400 status code is returned indicating the 
+            operation was not successful.
     '''
     project = request.form['project']
     username = request.form['username']
