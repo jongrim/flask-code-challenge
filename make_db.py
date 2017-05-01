@@ -22,6 +22,7 @@ TABLES['users'] = (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `username` varchar(20) NOT NULL DEFAULT '',
         `email` varchar(64) NOT NULL DEFAULT '',
+        `zipcode` varchar(5) NOT NULL DEFAULT '',
         PRIMARY KEY(`id`),
         UNIQUE KEY `unique_username` (`username`),
         UNIQUE KEY `unique_email` (`email`)
@@ -58,10 +59,11 @@ def main():
     try:
         db.database = DB_NAME
     except mysql.connector.Error as err:
+        # If database does not exist yet, create it
         if err.errno == errorcode.ER_BAD_DB_ERROR:
             create_database(cursor)
             db.database = DB_NAME
-        else:
+        else:  # Error is something else, print and exit
             print(err)
             exit(1)
 
@@ -71,7 +73,7 @@ def main():
             cursor.execute(ddl)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print('already exists.')
+                print('already exists.')  # Table already exists
         else:
             print('OK.')
     cursor.close()

@@ -1,9 +1,30 @@
+'''
+Instantiate the Flask app and provide views for the application.
+
+This is the main module of the soundcollide package and is the point where
+the Flask object is instantiated. This module also defines the views available
+and performs the various database calls necessary for inserting or selecting
+data.
+
+Attributes:
+    app (Flask): The Flask object.
+
+Functions:
+    index (route): Matches requests for the root of the application.
+    new_profile (route): Creates a new profile based on supplied data from
+        a form. Supports only POST requests.
+    get_profile (route): Gets a profile matching a supplied id and returns
+        the profile's attributes.
+    add_project (route): Takes data from a form and saves a new project
+        associated with an already existing user.
+    get_database_connection: Returns a connection to the database.
+'''
 from flask import Flask, request, make_response
 from config import config
 import mysql
 
 
-app = Flask(__name__)
+app = Flask(__name__)  # Uses the name of the module for instatiating the object
 
 
 @app.route('/')
@@ -35,7 +56,7 @@ def new_profile():
         return make_response(('Invalid zipcode', 400))
 
     add_user = (
-        'INSERT INTO user (username, email, zipcode) VALUES (%s, %s, %s)'
+        'INSERT INTO users (username, email, zipcode) VALUES (%s, %s, %s)'
     )
 
     db = get_database_connection()
