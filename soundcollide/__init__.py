@@ -1,0 +1,1 @@
+from .soundcollide import app
