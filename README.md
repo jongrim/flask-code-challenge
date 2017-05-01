@@ -8,9 +8,7 @@ These instructions assume Python 3.3 or higher is installed and has the standard
 - To replicate MySQL database transactions, download and install MAMP (https://www.mamp.info/en/)
 
 ## Mandatory Installation Steps
-- Unzip the supplied zip package into the directory of your choosing
-- From the terminal, change into the newly created ‘soundcollide_app’ directory
-- Initialize a python virtual environment within the Soundcollide directory:
+- Initialize a python virtual environment within the top soundcollide_app directory:
     - `$ python3 -m venv .`
 - Activate the python virtual environment:
     - `$ source ./bin/activate`
@@ -33,7 +31,7 @@ After the mandatory installation steps have been completed, the application can 
 - Use a browser or a tool such as Postman to send requests to the defined endpoints
 
 # Recommendations for testing
-No database export is provided, so the database and tables are created empty. I recommend first testing calls to the `/new-profile/` endpoint to generate some table data, and then moving on to testing the `/profile/<id>` and `/project/` endpoints
+No database export is provided, so the database and tables are created empty. I recommend first testing calls to the `/new-profile/` endpoint to generate some table data, and then moving on to testing the `/profile/<id>` and `/project/` endpoints. Comments are included in the code which outline the expected parameters for each endpoint.
 
 # Application folder structure
 Below is a reference chart of the relevant application folders and files. Directories added by libraries or Python virtual environment are not documented, so this is not representative of every file and directory that will exist. Directories are indicated by a trailing slash, while files have file endings.
