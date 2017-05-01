@@ -47,7 +47,7 @@ def new_profile():
             password value.
         username (string): The user's desired username. The database forces
             unique entries only.
-        email (string): The user's email. The database forces unique entries 
+        email (string): The user's email. The database forces unique entries
             only.
         zipcode (string): The user's zipcode. Must be 5 characters and a string
             of all digits.
@@ -139,7 +139,7 @@ def add_project():
 
     Returns:
         Response: A 201 status code is returned if the project is successfully
-            added. If not a 400 status code is returned indicating the 
+            added. If not a 400 status code is returned indicating the
             operation was not successful.
     '''
     project = request.form['project']
