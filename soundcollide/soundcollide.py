@@ -1,5 +1,5 @@
 from flask import Flask, request, make_response
-from config import db
+from config import config
 import mysql
 
 
@@ -38,7 +38,7 @@ def new_profile():
         'INSERT INTO user (username, email, zipcode) VALUES (%s, %s, %s)'
     )
 
-    db.database = 'users'
+    db = get_database_connection()
     cursor = db.cursor()
     try:
         cursor.execute(add_user, (username, email, zipcode))
@@ -53,24 +53,52 @@ def new_profile():
     return make_response((f'User, {username}, added', 201))
 
 
-@app.route('/profile/<int:id>')
+@app.route('/profile/<int:id>/')
 def get_profile(id):
     '''Retrieve the profile for the given id and return its attributes.
 
     Parameters:
-        id (int): The id for the profile to be displayed
-    '''
+        id (int): The id for the profile to be displayed.
 
-    db.database = 'users'
+    Returns:
+        Response: If the id is valid, the username, email, and zipcode are
+            rendered as a response. If not, a message is rendered that no
+            result was not found.
+    '''
+    db = get_database_connection()
     cursor = db.cursor(dictionary=True)
 
     select_user = (
-        'SELECT username, email, zipcode FROM user WHERE id=%s'
+        'SELECT username, email, zipcode FROM user WHERE id = %s'
     )
 
-    cursor.execute(select_user, id)
-    if cursor.rowcount < 1:
-        return make_response(('User not found', 200))
+    cursor.execute(select_user, (id,))
 
-    row = cursor.next()
+    try:
+        row = cursor.next()
+    except StopIteration:
+        return make_response(('No result found', 404))
+    else:
+        username = row['username']
+        email = row['email']
+        zipcode = row['zipcode']
+        return make_response((f'''
+            <p>Username: {username}</p>
+            <p>Email: {email}</p>
+            <p>Zipcode: {zipcode}</p>
+        ''', 200))
+    finally:
+        cursor.close()
+        db.close()
     return make_response((row['username'], 200))
+
+
+def get_database_connection():
+    '''Build a database connection using the imported configuration.
+
+    Returns:
+        Connection: A connection to the database
+    '''
+    db = mysql.connector.connect(**config)
+    db.database = 'users'
+    return db
