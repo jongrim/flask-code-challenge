@@ -6,3 +6,4 @@ lib/*
 *.json
 *.cfg
 *.pyc
+*.zip

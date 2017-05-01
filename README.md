@@ -33,6 +33,8 @@ After the mandatory installation steps have been completed, the application can 
 # Recommendations for testing
 No database export is provided, so the database and tables are created empty. I recommend first testing calls to the `/new-profile/` endpoint to generate some table data, and then moving on to testing the `/profile/<id>` and `/project/` endpoints. Comments are included in the code which outline the expected parameters for each endpoint.
 
+Note that Flask is particular about the URLs for POST requests. URLs have been defined with trailing slashes, and Flask will generate a Method Not Allowed Error if a POST request is sent to the URL without the trailing slash.
+
 # Application folder structure
 Below is a reference chart of the relevant application folders and files. Directories added by libraries or Python virtual environment are not documented, so this is not representative of every file and directory that will exist. Directories are indicated by a trailing slash, while files have file endings.
 
