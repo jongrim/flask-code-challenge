@@ -43,12 +43,15 @@ def new_profile():
     try:
         cursor.execute(add_user, (username, email, zipcode))
     except mysql.connector.errors.IntegrityError as err:
+        # The database enforces unique entries for username and email
+        # Duplicate entries will raise an IntegrityError
         return make_response((f'Failed to add entry with error: {err}', 500))
     else:
         db.commit()
-
-    cursor.close()
-    db.close()
+    finally:
+        # Close the cursor and database connection
+        cursor.close()
+        db.close()
 
     return make_response((f'User, {username}, added', 201))
 
@@ -69,7 +72,7 @@ def get_profile(id):
     cursor = db.cursor(dictionary=True)
 
     select_user = (
-        'SELECT username, email, zipcode FROM user WHERE id = %s'
+        'SELECT username, email, zipcode FROM users WHERE id = %s'
     )
 
     cursor.execute(select_user, (id,))
@@ -91,6 +94,51 @@ def get_profile(id):
         cursor.close()
         db.close()
     return make_response((row['username'], 200))
+
+
+@app.route('/project/', methods=['POST'])
+def add_project():
+    '''Saves a new project to a user id, if available.
+
+    Returns:
+        Response: A 201 status code is returned if the project is successfully
+            added. If not a 400 status code is returned indicating the operation
+            was not successful.
+    '''
+    project = request.form['project']
+    username = request.form['username']
+
+    db = get_database_connection()
+    cursor = db.cursor()
+
+    select_user = (
+        'SELECT id FROM users WHERE username = %s'
+    )
+
+    cursor.execute(select_user, (username,))
+
+    try:
+        row = cursor.next()
+    except StopIteration:
+        return make_response(('No matching user found', 404))
+    else:
+        user_id = row[0]
+
+    add_project = (
+        'INSERT INTO projects (project, user) VALUES (%s, %s)'
+    )
+
+    try:
+        cursor.execute(add_project, (project, user_id))
+    except mysql.connector.errors.IntegrityError as err:
+        return make_response((f'Failed to add entry with error: {err}', 500))
+    else:
+        db.commit()
+    finally:
+        cursor.close()
+        db.close()
+
+    return make_response((f'Project saved to user, {username}', 201))
 
 
 def get_database_connection():

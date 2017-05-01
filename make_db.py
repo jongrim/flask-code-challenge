@@ -1,5 +1,5 @@
 '''
-Create the soundcollide app's database and table.
+Create the soundcollide app's database and tables.
 
 Example usage:
     $ python make_db.py
@@ -11,7 +11,7 @@ Attributes:
 '''
 import mysql.connector
 from mysql.connector import errorcode
-from soundcollide.config import db
+from config import db
 
 DB_NAME = 'users'
 
@@ -26,6 +26,17 @@ TABLES['users'] = (
         UNIQUE KEY `unique_username` (`username`),
         UNIQUE KEY `unique_email` (`email`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8'''
+)
+
+TABLES['projects'] = (
+    '''CREATE TABLE `projects` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `project` text NOT NULL,
+        `user` int(11) unsigned NOT NULL,
+        PRIMARY KEY (`id`),
+        KEY `user` (`user`),
+        CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;'''
 )
 
 cursor = db.cursor()
