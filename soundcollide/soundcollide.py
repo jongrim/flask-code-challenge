@@ -111,6 +111,7 @@ def add_project():
     db = get_database_connection()
     cursor = db.cursor()
 
+    # Verify the user is valid and exists
     select_user = (
         'SELECT id FROM users WHERE username = %s'
     )
@@ -124,6 +125,7 @@ def add_project():
     else:
         user_id = row[0]
 
+    # Add the project to the projects table with a reference to the user
     add_project = (
         'INSERT INTO projects (project, user) VALUES (%s, %s)'
     )
@@ -131,6 +133,7 @@ def add_project():
     try:
         cursor.execute(add_project, (project, user_id))
     except mysql.connector.errors.IntegrityError as err:
+        # Foreign key constraint will raise IntegrityError
         return make_response((f'Failed to add entry with error: {err}', 500))
     else:
         db.commit()
@@ -145,7 +148,7 @@ def get_database_connection():
     '''Build a database connection using the imported configuration.
 
     Returns:
-        Connection: A connection to the database
+        Connection: A connection to the database.
     '''
     db = mysql.connector.connect(**config)
     db.database = 'users'
